@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    restart: unless-stopped # Reinicia o contêiner a menos que seja parado manualmente
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
+    healthcheck: # Verifica se o serviço está saudável
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"] # Endpoint de saúde da API
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy: # Configurações de implantação
+      resources: # Limites de recursos
+        limits:
+          cpus: '0.5' # Limite de CPU
+          memory: 512M # Limite de memória
+    security_opt: # Opções de segurança
+      - no-new-privileges:true # Impede a elevação de privilégios dentro do contêiner
+    read_only: false # logs do FastAPI precisam ser escritos
+    tmpfs: # Sistema de arquivos temporário
+      - /tmp:rw,noexec,nosuid,size=100m # Monta /tmp como tmpfs com opções específicas, como leitura e escrita, sem execução, sem setuid e tamanho máximo de 100MB

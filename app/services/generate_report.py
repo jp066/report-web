@@ -1,8 +1,10 @@
 import requests
 import xml.etree.ElementTree as ET
+from app.schemas.env_schema import settings
+from app.schemas.env_schema import settings
 
-URL = "https://bbsltda149898.rm.cloudtotvs.com.br:8051/wsReport/IwsReport"
-AUTH = ("mestre", "123t0tvs") # alterar isso aqui.
+URL = settings.TOTVS_URL
+AUTH = (settings.TOTVS_USERNAME, settings.TOTVS_PASSWORD)
 
 def generate_report(id_report):
   xml_generate = f"""
@@ -71,14 +73,14 @@ def generate_report(id_report):
       "Accept-Encoding": "gzip, deflate",
       "Content-Type": "text/xml;charset=UTF-8",
       "SOAPAction": '"http://www.totvs.com/IwsReport/GenerateReport"',
-      "Authorization": "Basic bWVzdHJlOjEyM3QwdHZz",
+      "Authorization": settings.AUTH_HARDCODED,
       "Content-Length": str(len(xml_generate)),
       "Host": "bbsltda149898.rm.cloudtotvs.com.br:8051",
       "Connection": "Keep-Alive",
       "User-Agent": requests.utils.default_user_agent(),
   }
 
-  resp = requests.post(URL, data=xml_generate, headers=headers, auth=AUTH, verify=False)
+  resp = requests.post(URL, data=xml_generate, headers=headers, auth=AUTH, verify=settings.SOAP_VERIFY_SSL)
   parser_xml = ET.fromstring(resp.content)
   guid = None
   for element in parser_xml.iter(): # percorre todos os elementos do XML
