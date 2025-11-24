@@ -17,7 +17,6 @@ async def generate_report_endpoint(id_report: int, response_model=Report):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-#@reportRouter.post("/chunk/{guid}/{size_file}")
 @reportRouter.post("/chunk/")
 async def get_file_chunk_endpoint(guid: str, size: int):
     try:

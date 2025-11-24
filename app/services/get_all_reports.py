@@ -45,7 +45,8 @@ def report_list():
     result_elem = root.find(".//t:GetReportListResult", ns)
     
     if result_elem is None or result_elem.text is None:
-        raise RuntimeError("Elemento GetReportListResult não encontrado na resposta SOAP")
+        # raise RuntimeError("Elemento GetReportListResult não encontrado na resposta SOAP")
+        return report_list()
     
     result = result_elem.text
     records = [r for r in result.split(";") if r.strip()]
