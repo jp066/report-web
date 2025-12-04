@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+.buttonAlt {
+  border-radius: 20px !important;
+  border: 1px solid transparent !important;
+  padding: 0.6em 1.2em !important;
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  background-color: #1a1a1a !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s !important;
+}
+
+.buttonAlt:hover {
+  border-color: #cecfea !important;
+}
+
+.buttonLogin {
+  border-radius: 20px !important;
+  border: 1px solid transparent !important;
+  padding: 0.6em 1.2em !important;
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  background-color: #1a1a1a !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s !important;
+}
+
+.buttonLogin:hover {
+  border-color: #cecfea !important;
+}
+
+.buttonReport {
+  border-radius: 20px !important;
+  border: 1px solid transparent !important;
+  padding: 0.6em 1.2em !important;
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  background-color: #474747 !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s !important;
+}
+
+.buttonReport:hover {
+  border-color: #6b6b6b !important;
+}
+
+.buttonHeader {
+  color: #1a1a1a !important;
+  border-radius: 20px !important;
+  border: 1px solid transparent !important;
+  padding: 0.6em 1.2em !important;
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  background-color: rgb(156, 156, 157) !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s !important;
+}
+
+.buttonHeader:hover {
+  border-color: #6b6b6b !important;
+}
+
+.buttonDownload {
+  border-radius: 20px !important;
+  border: 1px solid transparent !important;
+  padding: 0.6em 1.2em !important;
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  background-color: rgb(22, 90, 190) !important;
+  cursor: pointer !important;
+  transition: border-color 0.25s !important;
+}
+
+.buttonDownload:hover {
+  border-color: #6b6b6b !important;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
