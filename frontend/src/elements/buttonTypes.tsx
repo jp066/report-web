@@ -30,4 +30,10 @@ const ButtonLogin: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (pr
   </button>
 );
 
-export { ButtonAlt, ButtonReport, ButtonHeader, ButtonDownload, ButtonLogin };
+const ButtonSignUp: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
+  <button {...props} className={`buttonSignUp ${props.className || ""}`}>
+    {props.children}
+  </button>
+);
+
+export { ButtonAlt, ButtonReport, ButtonHeader, ButtonDownload, ButtonLogin, ButtonSignUp };
