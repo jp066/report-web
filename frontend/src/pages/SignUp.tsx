@@ -1,30 +1,39 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth.ts";
-import { ButtonLogin, ButtonSignUp } from "../elements/buttonTypes";
+import { ButtonLogin, ButtonSignUp } from "../elements/buttonTypes.tsx";
 import { useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
+export default function SignUpPage() {
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [contextoEducacional, setContextoEducacional] = useState("");
   const [senha, setSenha] = useState("");
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  async function handleSubmit(event: React.FormEvent) {
+  async function handleSubmitSignup(event: React.FormEvent) {
     event.preventDefault();
     setIsLoading(true);
     setError("");
+    console.log("Botão de cadastro clicado com email:", email);
     try {
-      await signIn(email, senha);
-      sessionStorage.setItem("show2faModal", "true");
-      navigate("/");
+      await signUp(email, senha);
+      navigate("/login");
     } catch (err: any) {
       setError("Usuário ou senha inválidos");
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function handleSelectContexto(
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) {
+    console.log("Contexto educacional selecionado:", event.target.value);
+    setContextoEducacional(event.target.value);
   }
 
   return (
@@ -33,15 +42,49 @@ export default function LoginPage() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-4">
-              <img
-                src="/favicon.ico"
-                alt="Logo"
-                className="w-12 h-12"
-              />
+              <img src="/favicon.ico" alt="Logo" className="w-12 h-12" />
             </div>
+            <p className="text-md text-gray-600 dark:text-gray-400 mt-2">
+              Utilize o mesmo email cadastrado no Sistema
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmitSignup} className="space-y-6">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Nome Completo
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" />
+                  </svg>
+                </div>
+                <input
+                  id="nome"
+                  type="text"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Fulano de Tal"
+                />
+              </div>
+            </div>
             <div>
               <label
                 htmlFor="email"
@@ -76,6 +119,51 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Contexto Educaional
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    className="w-5 h-5 text-gray-400"
+                  >
+                    <rect
+                      x="8"
+                      y="3"
+                      width="8"
+                      height="8"
+                      rx="2"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                    <rect x="3" y="13" width="8" height="8" rx="2" />
+                    <rect x="13" y="13" width="8" height="8" rx="2" />
+                  </svg>
+                </div>
+                <div>
+                  <select
+                    className=" w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    value={contextoEducacional}
+                    onChange={handleSelectContexto}
+                  >
+                    <option value="brightbee-school">Bright Bee School</option>
+                    <option value="brightbee">Bright Bee</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="password"
@@ -173,30 +261,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <div className="rounded-full">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </div>
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                  Lembrar-me
-                </span>
-              </label>
-              {/* Modificar senha */}
-              <button
-                type="button"
-                onClick={() => navigate("/forgot-password")}
-                className="flex items-center"
-              >
-                <span className="ml-2 text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
-                  Esqueci minha senha
-                </span>
-              </button>
-            </div>
-
             <ButtonLogin
               type="submit"
               disabled={isLoading}
@@ -226,22 +290,24 @@ export default function LoginPage() {
                   <span>Entrando...</span>
                 </>
               ) : (
-                "Entrar"
+                "Cadastrar e Entrar"
               )}
             </ButtonLogin>
-            <div className="w-full my-4 flex items-center">
-              <div className="flex-grow border-t border-gray-300 dark:border-gray-600" />
-              <span className="mx-4 text-sm text-gray-500 dark:text-gray-400">Ou</span>
-              <div className="flex-grow border-t border-gray-300 dark:border-gray-600" />
-            </div>
-            <ButtonSignUp
-              type="button"
-              onClick={() => navigate("/signup")}
-              className="w-full text-white py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2 mt-4 cursor-pointer hover:bg-green-600"
-            >
-              Caso não possua conta BBS, Cadastre-se
-            </ButtonSignUp>
           </form>
+          <div className="w-full my-4 flex items-center">
+            <div className="flex-grow border-t border-gray-300 dark:border-gray-600" />
+            <span className="mx-4 text-sm text-gray-500 dark:text-gray-400">
+              Ou
+            </span>
+            <div className="flex-grow border-t border-gray-300 dark:border-gray-600" />
+          </div>
+          <ButtonSignUp
+            type="button"
+            onClick={() => navigate("/login")}
+            className="w-full text-white py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2 mt-4 cursor-pointer hover:bg-green-600"
+          >
+            Caso possua conta BBS, Entre aqui
+          </ButtonSignUp>
         </div>
 
         {/* Footer */}

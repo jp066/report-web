@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { get2faQrCode } from "../services/api";
 import { useNavigate } from "react-router-dom";
-
+import { FaArrowLeft } from "react-icons/fa6";
 
 const ShowQrCode: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +20,10 @@ const ShowQrCode: React.FC = () => {
         setQrCode(qrCodeUrl);
       } catch (error: any) {
         console.error("Erro ao buscar o QR Code 2FA:", error);
-        setQrError("Não foi possível carregar o QR Code. Tente novamente ou contate o suporte.");
+        const errorMessage =
+          error.message ||
+          "Não foi possível carregar o QR Code. Tente novamente ou contate o suporte.";
+        setQrError(errorMessage);
       }
     }
     setIsActivated2fa(false);
@@ -43,6 +46,13 @@ const ShowQrCode: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-8 text-center">
+          <button
+            onClick={() => navigate("/login")}
+            className="cursor-pointer absolute top-4 left-4 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
+            aria-label="Voltar"
+          >
+            <FaArrowLeft size={24} />
+          </button>
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
             Escaneie o QR Code
           </h2>
@@ -51,7 +61,12 @@ const ShowQrCode: React.FC = () => {
             escanear o QR Code abaixo e ativar o 2FA.
           </p>
           {qrError ? (
-            <p className="text-red-600">{qrError}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg p-6">
+              <p className="text-red-600 dark:text-red-400 font-semibold text-lg mb-2">
+                Erro ao carregar QR Code
+              </p>
+              <p className="text-red-700 dark:text-red-300">{qrError}</p>
+            </div>
           ) : qrCode ? (
             <img
               src={qrCode}
@@ -60,7 +75,15 @@ const ShowQrCode: React.FC = () => {
               style={{ width: 220, height: 220 }}
             />
           ) : (
-            <p>Carregando QR Code...</p>
+            <div className="flex flex-col items-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <p className="text-gray-600 dark:text-gray-400">
+                Gerando QR Code, aguarde...
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-500">
+                Isso pode levar até 60 segundos na primeira vez
+              </p>
+            </div>
           )}
 
           {/* Quando o usuário tem ativo o 2FA */}
@@ -90,7 +113,7 @@ const ShowQrCode: React.FC = () => {
                   className="cursor-pointer"
                   onClick={() => {
                     setIsTokenGeneratedClick(true);
-                    }}
+                  }}
                 >
                   clique aqui.
                 </a>

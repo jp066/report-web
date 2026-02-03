@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,12 +17,14 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #ffffff;
   text-decoration: inherit;
 }
+
 a:hover {
-  color: #535bf2;
+  color: #003cf1;
 }
+
 
 body {
   margin: 0;
@@ -80,7 +82,9 @@ h1 {
 }
 
 .buttonReport:hover {
-  border-color: #6b6b6b !important;
+  border-color: #23374f !important;
+  background-color: #37659b !important;
+  transition: all 0.3s ease-in-out !important;
 }
 
 .buttonHeader {

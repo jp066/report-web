@@ -10,10 +10,11 @@ import SkeletonCard from "../components/SkeletonCard";
 import ErrorMessage from "../components/ErrorMessage";
 import Header from "../components/Header";
 import SearchComponent from "../components/SearchComponent";
-//import { AuthContext } from "../contexts/authContexts";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   const [filteredRelatorios, setFilteredRelatorios] = useState<Relatorio[]>([]);
+  const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [show2faModal, setShow2faModal] = useState(false);
@@ -21,9 +22,15 @@ export default function HomePage() {
   const { signOut } = useAuth();
   const handleSearch = (query: string) => {
     const lowerQuery = query.toLowerCase();
-    setFilteredRelatorios((prevRelatorios) =>
-      prevRelatorios.filter((relatorio) =>
-        relatorio.nome_sistema.toLowerCase().includes(lowerQuery)
+    setFilteredRelatorios(
+      relatorios.filter((relatorio) =>
+        relatorio.nome_sistema.toLowerCase().includes(lowerQuery) ||
+        (relatorio.codigo_sistema?.toLowerCase().includes(lowerQuery) ?? false) ||
+        relatorio.id_interno.toLowerCase().includes(lowerQuery) ||
+        relatorio.codigo_relatorio.toLowerCase().includes(lowerQuery) ||
+        relatorio.nome_relatorio.toLowerCase().includes(lowerQuery) ||
+        relatorio.data_atualizacao.toLowerCase().includes(lowerQuery) ||
+        relatorio.guid.toLowerCase().includes(lowerQuery)
       )
     );
   };
@@ -34,6 +41,12 @@ export default function HomePage() {
       setError(null);
       const data = await fetchRelatorios();
 
+      // Valida se data é array antes de chamar .sort()
+      if (!Array.isArray(data)) {
+        console.error("fetchRelatorios não retornou um array:", data);
+        throw new Error("Formato de resposta inválido do servidor");
+      }
+
       const sorted = data.sort((a, b) => {
         const dateA = new Date(a.data_atualizacao || 0).getTime();
         const dateB = new Date(b.data_atualizacao || 0).getTime();
@@ -41,11 +54,19 @@ export default function HomePage() {
       });
 
       sessionStorage.setItem("relatorios", JSON.stringify(sorted));
+      setRelatorios(sorted);
       setFilteredRelatorios(sorted);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Erro ao carregar relatórios"
-      );
+    } catch (err: any) {
+      console.error("Erro ao carregar relatórios:", err);
+      
+      // Tratamento específico para erro de licença TOTVS (503)
+      if (err.response?.status === 503) {
+        setError("Sistema TOTVS temporariamente indisponível (sem licenças). Tente novamente em alguns minutos.");
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError(err instanceof Error ? err.message : "Erro ao carregar relatórios");
+      }
     } finally {
       setLoading(false);
     }
@@ -54,7 +75,9 @@ export default function HomePage() {
   useEffect(() => {
     const cachedRelatorios = sessionStorage.getItem("relatorios");
     if (cachedRelatorios) {
-      setFilteredRelatorios(JSON.parse(cachedRelatorios));
+      const parsed: Relatorio[] = JSON.parse(cachedRelatorios);
+      setRelatorios(parsed);
+      setFilteredRelatorios(parsed);
       setLoading(false);
     } else {
       loadRelatorios();
@@ -107,8 +130,8 @@ export default function HomePage() {
           </>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredRelatorios.map((relatorio) => (
-              <RelatorioCard key={relatorio.guid} relatorio={relatorio} />
+            {filteredRelatorios.map((relatorio, index) => (
+              <RelatorioCard key={`${relatorio.guid}-${index}`} relatorio={relatorio} />
             ))}
           </div>
         )}
@@ -149,6 +172,37 @@ export default function HomePage() {
           </div>
         </ModalNotification>
       </main>
+      {/* Paginação */}
+      <div className="flex justify-center items-center gap-4 py-8">
+        <button
+          className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          disabled
+        >
+          Anterior
+        </button>
+        
+        <div className="flex items-center gap-2">
+          {[1, 2, 3, 4, 5].map((page) => (
+            <button
+              key={page}
+              className={`w-10 h-10 rounded-lg font-medium transition-all duration-200 ${
+                page === 1
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          Próximo
+        </button>
+      </div>
+      <Footer />
     </div>
   );
 }

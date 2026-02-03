@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { validate2fa } from '../services/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { validate2fa } from "../services/api";
+import { CodeInput } from "../components/inputMask";
 
 const TwoFactorAuth: React.FC = () => {
-  const [code, setCode] = useState('');
-  const [error, setError] = useState('');
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
+
+    if (code.length !== 6) {
+      setError("O código deve ter 6 dígitos");
+      return;
+    }
+
     setIsLoading(true);
     try {
-  const response = await validate2fa(code);
+      const response = await validate2fa(code);
       if (response.status === 200) {
-        navigate('/');
+        navigate("/");
       }
     } catch (err: any) {
-      setError('Código inválido. Tente novamente.');
+      console.error("Erro na validação 2FA:", err);
+      setError(err.message || "Erro ao validar o código. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -51,16 +59,10 @@ const TwoFactorAuth: React.FC = () => {
               >
                 Código do autenticador
               </label>
-              <input
-                id="code"
-                type="text"
+              <CodeInput
                 value={code}
-                onChange={e => setCode(e.target.value)}
-                maxLength={6}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                placeholder="Digite o código"
-                autoFocus
+                onChange={setCode}
+                length={6}
               />
             </div>
             <button
@@ -68,10 +70,21 @@ const TwoFactorAuth: React.FC = () => {
               className="buttonLogin w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'Validando...' : 'Validar'}
+              {isLoading ? "Validando..." : "Validar"}
             </button>
             {error && <p className="text-red-500 text-center">{error}</p>}
-            <a onClick={() => navigate('/2fa/qrcode')} className="cursor-pointer text-blue-500 hover:underline block text-center mt-4">Visualizar meu QR code</a>
+            <a
+              onClick={() => navigate("/2fa/qrcode")}
+              className="cursor-pointer text-blue-500 hover:underline block text-center mt-4"
+            >
+              Visualizar meu QR code
+            </a>
+            <a
+              onClick={() => navigate("/login")}
+              className="cursor-pointer text-blue-500 hover:underline block text-center mt-4"
+            >
+              Voltar
+            </a>
           </form>
         </div>
       </div>
