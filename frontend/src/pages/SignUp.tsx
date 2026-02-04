@@ -2,8 +2,11 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth.ts";
 import { ButtonLogin, ButtonSignUp } from "../elements/buttonTypes.tsx";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 export default function SignUpPage() {
+  const animatedComponents = makeAnimated();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [contextoEducacional, setContextoEducacional] = useState("");
@@ -39,6 +42,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <div></div>
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-4">
@@ -151,15 +155,78 @@ export default function SignUpPage() {
                     <rect x="13" y="13" width="8" height="8" rx="2" />
                   </svg>
                 </div>
-                <div>
-                  <select
-                    className=" w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    value={contextoEducacional}
-                    onChange={handleSelectContexto}
-                  >
-                    <option value="brightbee-school">Bright Bee School</option>
-                    <option value="brightbee">Bright Bee</option>
-                  </select>
+                <div className="mb-4 w-full max-w-xs relative bg-gray-800 rounded-md shadow-sm">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5"
+                      aria-hidden
+                    >
+                      <rect
+                        x="8"
+                        y="3"
+                        width="8"
+                        height="8"
+                        rx="2"
+                        fill="currentColor"
+                        stroke="none"
+                      />
+                      <rect x="3" y="13" width="8" height="8" rx="2" />
+                      <rect x="13" y="13" width="8" height="8" rx="2" />
+                    </svg>
+                  </div>
+                  <Select
+                    className="w-full max-w-xs text-black"
+                    closeMenuOnScroll={true}
+                    classNamePrefix="react-select"
+                    placeholder="Selecionar contexto"
+                    closeMenuOnSelect={false}
+                    components={animatedComponents}
+                    isMulti
+                    options={[
+                      { value: "bbs", label: "Bright Bee School" },
+                      { value: "bs", label: "Bright School" },
+                    ]}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        paddingLeft: 48,
+                        backgroundColor: "#3b4757ff",
+                        borderColor: "#374151",
+                        borderRadius: "0.5rem",
+                        minHeight: "3rem",
+                        color: "white",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: "#111827",
+                      }),
+                      menuList: (provided) => ({
+                        ...provided,
+                        color: "#E5E7EB",
+                        backgroundColor: "#111827",
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        color: "#E5E7EB",
+                        backgroundColor: state.isSelected
+                          ? "#1f2937"
+                          : state.isFocused
+                            ? "#374151"
+                            : "#111827",
+                      }),
+                      valueContainer: (provided) => ({
+                        ...provided,
+                        paddingLeft: 0,
+                      }),
+                    }}
+                  />
                 </div>
               </div>
             </div>

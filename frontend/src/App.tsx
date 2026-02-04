@@ -37,7 +37,7 @@ function App() {
           </PrivateRoute>
       }/>
         <Route path="*" element={<NotFound />} />
-        <Route path="/settings" element={
+        <Route path="/configuracoes" element={
           <PrivateRoute>
             <SettingsPage />
           </PrivateRoute>

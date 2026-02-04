@@ -237,7 +237,7 @@ export default function LoginPage() {
             <ButtonSignUp
               type="button"
               onClick={() => navigate("/signup")}
-              className="w-full text-white py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2 mt-4 cursor-pointer hover:bg-green-600"
+              className="opacity-40 pointer-events-none w-full text-white py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2 mt-4 cursor-pointer hover:bg-green-600"
             >
               Caso não possua conta BBS, Cadastre-se
             </ButtonSignUp>

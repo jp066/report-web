@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import { IoReload } from "react-icons/io5";
 import { VscClearAll } from "react-icons/vsc";
 
 interface SearchComponentProps {
@@ -48,6 +49,8 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch }) => {
         >
           <FaSearch size={20} className="hover:text-white transition-colors" />
         </button>
+        
+          <IoReload size={20} className="hover:text-white transition-colors" />
       </form>
     </div>
   );

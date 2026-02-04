@@ -5,7 +5,8 @@ import {
   IoCloseCircleOutline,
   IoWarningOutline,
   IoInformationCircleOutline,
- } from "react-icons/io5";
+} from "react-icons/io5";
+import { HiMiniQueueList } from "react-icons/hi2";
 
 interface ModalNotificationProps {
   isOpen: boolean;
@@ -36,31 +37,34 @@ export default function ModalNotification(props: ModalNotificationProps) {
 
   const typeConfig = {
     success: {
-      icon: (
-        <IoCheckmarkCircleOutline className="w-12 h-12" />
-      ),
+      icon: <IoCheckmarkCircleOutline className="w-12 h-12" />,
       iconBg: "bg-emerald-100 dark:bg-emerald-900/40",
       iconColor: "text-emerald-600 dark:text-emerald-400",
     },
     error: {
-      icon: (
-        <IoCloseCircleOutline className="w-12 h-12" />
-      ),
+      icon: <IoCloseCircleOutline className="w-12 h-12" />,
       iconBg: "bg-red-100 dark:bg-red-900/40",
       iconColor: "text-red-600 dark:text-red-400",
       buttonBg: "bg-red-600 hover:bg-red-700",
     },
     warning: {
-      icon: (
-        <IoWarningOutline className="w-12 h-12" />
-      ),
+      icon: <IoWarningOutline className="w-12 h-12" />,
       iconBg: "bg-amber-100 dark:bg-amber-900/40",
       iconColor: "text-amber-600 dark:text-amber-400",
       buttonBg: "bg-amber-600 hover:bg-amber-700",
     },
     info: {
+      icon: <IoInformationCircleOutline className="w-12 h-12" />,
+      iconBg: "bg-blue-100 dark:bg-blue-900/40",
+      iconColor: "text-blue-600 dark:text-blue-400",
+      buttonBg: "bg-blue-600 hover:bg-blue-700",
+    },
+    download: {
       icon: (
-        <IoInformationCircleOutline className="w-12 h-12" />
+        <div>
+          <span></span>
+          <HiMiniQueueList className="w-8 h-8" />
+        </div>
       ),
       iconBg: "bg-blue-100 dark:bg-blue-900/40",
       iconColor: "text-blue-600 dark:text-blue-400",

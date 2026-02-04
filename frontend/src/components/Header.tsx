@@ -6,11 +6,8 @@ import { IoMdSettings } from "react-icons/io";
 import { useAuth } from "../hooks/useAuth";
 import { curr_user, handleDownload, api } from "../services/api";
 import { useNavigate } from "react-router-dom";
-
-//type DownloadBtnProps = {
-//  url: string;
-//  filename: string;
-//};
+import { HiMiniQueueList } from "react-icons/hi2";
+import { TbReportSearch } from "react-icons/tb";
 
 export default function Header() {
   const { signOut } = useAuth();
@@ -220,8 +217,6 @@ export default function Header() {
     return "Ms. ";
   };
 
-
-
   useEffect(() => {
     async function fetchCurrentUser() {
       try {
@@ -288,18 +283,17 @@ export default function Header() {
       });
     } catch (err) {
       console.error("Erro ao baixar relatório:", err);
-      // opcional: mostrar notificação ao usuário
     }
   };
 
   return (
     <>
       <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-800/0 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center">
               <button
-                onClick={() => navigate("*")} // /settings
+                onClick={() => navigate("configuracoes")} // /settings
                 className="mr-4 cursor-pointer"
                 title="Configurações"
               >
@@ -312,6 +306,13 @@ export default function Header() {
               >
                 <IoMdLogOut className="w-8 h-8 text-2xl mr-2 text-gray-600 dark:text-gray-300 hover:bg-gray-300 hover:bg-gray-700 rounded-full hover:w-10 hover:h-10 transition-all" />
               </button>
+              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300">
+                {loadingUser
+                  ? "?"
+                  : curr_user_data && curr_user_data.nome
+                    ? curr_user_data.nome.charAt(0).toUpperCase()
+                    : "U"}
+              </div>
               <div className="flex flex-col ml-2">
                 <span
                   title="Usuário logado"
@@ -335,27 +336,33 @@ export default function Header() {
             </div>
             <div></div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-5">
               <nav>
-                <ButtonHeader
-                  className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition-colors"
+                <button
+                  className="px-4 py-2 rounded-full border border-gray-300 text-gray-900 dark:text-white font-medium transition-colors cursor-pointer"
                   onClick={() => {
                     navigate("/");
                   }}
                 >
-                  Relatórios
-                </ButtonHeader>
+                  <TbReportSearch className="w-6 h-6 text-gray-900 dark:text-white" />
+                </button>
+                <div className="w-full text-center mt-1">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Relatórios</span>
+                </div>
               </nav>
               <nav>
-                <ButtonDownload
+                <button
                   onClick={() => {
                     loadDownloadQueue();
                     setIsDownloadOpen(true);
                   }}
-                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+                  className="px-4 py-2 rounded-full border border-gray-300 text-gray-900 dark:text-white font-medium transition-colors cursor-pointer"
                 >
-                  Fila de Relatórios
-                </ButtonDownload>
+                  <HiMiniQueueList className="w-6 h-6 text-gray-900 dark:text-white" />
+                </button>
+                <div className="w-full text-center mt-1">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Fila de relatórios</span>
+                </div>
               </nav>
             </div>
           </div>
@@ -366,7 +373,7 @@ export default function Header() {
         onClose={() => setIsDownloadOpen(false)}
         title="Fila de Relatórios"
         message="Selecione um relatório da lista para fazer o download."
-        type="info"
+        type="download"
       >
         <div className="space-y-3">
           {downloadQueue.length === 0 ? (
@@ -401,11 +408,11 @@ export default function Header() {
                       const raw = sessionStorage.getItem("download_queue");
                       const q = raw ? JSON.parse(raw) : [];
                       const newQ = q.filter(
-                        (qitem: any) => qitem.guid !== item.guid
+                        (qitem: any) => qitem.guid !== item.guid,
                       );
                       sessionStorage.setItem(
                         "download_queue",
-                        JSON.stringify(newQ)
+                        JSON.stringify(newQ),
                       );
                       setDownloadQueue(newQ);
                     }}

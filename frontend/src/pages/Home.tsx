@@ -23,15 +23,17 @@ export default function HomePage() {
   const handleSearch = (query: string) => {
     const lowerQuery = query.toLowerCase();
     setFilteredRelatorios(
-      relatorios.filter((relatorio) =>
-        relatorio.nome_sistema.toLowerCase().includes(lowerQuery) ||
-        (relatorio.codigo_sistema?.toLowerCase().includes(lowerQuery) ?? false) ||
-        relatorio.id_interno.toLowerCase().includes(lowerQuery) ||
-        relatorio.codigo_relatorio.toLowerCase().includes(lowerQuery) ||
-        relatorio.nome_relatorio.toLowerCase().includes(lowerQuery) ||
-        relatorio.data_atualizacao.toLowerCase().includes(lowerQuery) ||
-        relatorio.guid.toLowerCase().includes(lowerQuery)
-      )
+      relatorios.filter(
+        (relatorio) =>
+          relatorio.nome_sistema.toLowerCase().includes(lowerQuery) ||
+          (relatorio.codigo_sistema?.toLowerCase().includes(lowerQuery) ??
+            false) ||
+          relatorio.id_interno.toLowerCase().includes(lowerQuery) ||
+          relatorio.codigo_relatorio.toLowerCase().includes(lowerQuery) ||
+          relatorio.nome_relatorio.toLowerCase().includes(lowerQuery) ||
+          relatorio.data_atualizacao.toLowerCase().includes(lowerQuery) ||
+          relatorio.guid.toLowerCase().includes(lowerQuery),
+      ),
     );
   };
 
@@ -58,14 +60,18 @@ export default function HomePage() {
       setFilteredRelatorios(sorted);
     } catch (err: any) {
       console.error("Erro ao carregar relatórios:", err);
-      
+
       // Tratamento específico para erro de licença TOTVS (503)
       if (err.response?.status === 503) {
-        setError("Sistema TOTVS temporariamente indisponível (sem licenças). Tente novamente em alguns minutos.");
+        setError(
+          "Sistema TOTVS temporariamente indisponível (sem licenças). Tente novamente em alguns minutos.",
+        );
       } else if (err.response?.data?.detail) {
         setError(err.response.data.detail);
       } else {
-        setError(err instanceof Error ? err.message : "Erro ao carregar relatórios");
+        setError(
+          err instanceof Error ? err.message : "Erro ao carregar relatórios",
+        );
       }
     } finally {
       setLoading(false);
@@ -131,10 +137,14 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredRelatorios.map((relatorio, index) => (
-              <RelatorioCard key={`${relatorio.guid}-${index}`} relatorio={relatorio} />
+              <RelatorioCard
+                key={`${relatorio.guid}-${index}`}
+                relatorio={relatorio}
+              />
             ))}
           </div>
         )}
+
         {/* Modal de 2FA */}
         <ModalNotification
           isOpen={show2faModal}
@@ -172,6 +182,7 @@ export default function HomePage() {
           </div>
         </ModalNotification>
       </main>
+
       {/* Paginação */}
       <div className="flex justify-center items-center gap-4 py-8">
         <button
@@ -180,15 +191,15 @@ export default function HomePage() {
         >
           Anterior
         </button>
-        
+
         <div className="flex items-center gap-2">
           {[1, 2, 3, 4, 5].map((page) => (
             <button
               key={page}
               className={`w-10 h-10 rounded-lg font-medium transition-all duration-200 ${
                 page === 1
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               }`}
             >
               {page}
@@ -196,9 +207,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <button
-          className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-        >
+        <button className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
           Próximo
         </button>
       </div>
