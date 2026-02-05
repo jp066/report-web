@@ -278,8 +278,8 @@ export default function Header() {
         method: "post",
         data: { b64 },
         filename: item.nome_relatorio
-          ? `relatorio_${item.codigo_relatorio}.pdf`
-          : `relatorio_${item.codigo_relatorio}.pdf`,
+          ? `${item.nome_relatorio}.pdf`
+          : `${item.nome_relatorio}.pdf`,
       });
     } catch (err) {
       console.error("Erro ao baixar relatório:", err);
@@ -301,18 +301,11 @@ export default function Header() {
               </button>
               <button
                 onClick={signOut}
-                className="mr-4 cursor-pointer"
+                className="cursor-pointer hover:scale-110 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300 transition-all"
                 title="Deslogar"
               >
-                <IoMdLogOut className="w-8 h-8 text-2xl mr-2 text-gray-600 dark:text-gray-300 hover:bg-gray-300 hover:bg-gray-700 rounded-full hover:w-10 hover:h-10 transition-all" />
+                <IoMdLogOut className="cursor-pointer hover:scale-110 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300 transition-all" />
               </button>
-              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300">
-                {loadingUser
-                  ? "?"
-                  : curr_user_data && curr_user_data.nome
-                    ? curr_user_data.nome.charAt(0).toUpperCase()
-                    : "U"}
-              </div>
               <div className="flex flex-col ml-2">
                 <span
                   title="Usuário logado"
@@ -347,7 +340,9 @@ export default function Header() {
                   <TbReportSearch className="w-6 h-6 text-gray-900 dark:text-white" />
                 </button>
                 <div className="w-full text-center mt-1">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">Relatórios</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    Relatórios
+                  </span>
                 </div>
               </nav>
               <nav>
@@ -361,7 +356,9 @@ export default function Header() {
                   <HiMiniQueueList className="w-6 h-6 text-gray-900 dark:text-white" />
                 </button>
                 <div className="w-full text-center mt-1">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">Fila de relatórios</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    Fila de relatórios
+                  </span>
                 </div>
               </nav>
             </div>

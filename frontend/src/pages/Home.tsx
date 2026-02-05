@@ -102,7 +102,7 @@ export default function HomePage() {
             ? "Carregando..."
             : `${filteredRelatorios.length} relatório(s) encontrado(s)`}
         </p>
-        <SearchComponent onSearch={handleSearch} />
+        <SearchComponent onSearch={handleSearch} updateRelatorios={loadRelatorios} />
         {error ? (
           <ErrorMessage message={error} onRetry={loadRelatorios} />
         ) : loading ? (

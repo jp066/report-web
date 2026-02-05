@@ -41,7 +41,7 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
         console.log("Dados do relatório:", relatorio);
         console.log("id_interno raw:", relatorio.id_interno);
 
-        const reportId = parseInt(relatorio.codigo_relatorio.trim(), 10);
+        const reportId = parseInt(relatorio.id_interno.trim(), 10);
 
         if (isNaN(reportId)) {
           throw new Error(
