@@ -31,15 +31,15 @@ def definer_params(**parameters):
     return params_xml
 
 
-def generate_report(id_report, codSistema, **parameters):
-    logger.info("Gerando relatório: id=%s codSistema=%s parameters_keys=%s", id_report, codSistema, list(parameters.keys()))
+def generate_report(id_report, codColigada, **parameters):
+    logger.info("Gerando relatório: id=%s codColigada=%s parameters_keys=%s", id_report, codColigada, list(parameters.keys()))
     parameters = definer_params(**parameters)
     xml_generate = f"""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tot="http://www.totvs.com/">
      <soapenv:Header/>
      <soapenv:Body>
         <tot:GenerateReport>
            <!--Optional:-->
-           <tot:codSistema>{codSistema}</tot:codSistema>
+           <tot:codColigada>{codColigada}</tot:codColigada>
            <!--Optional:-->
            <tot:id>{id_report}</tot:id>
            <!--Optional:-->
@@ -68,7 +68,7 @@ def generate_report(id_report, codSistema, **parameters):
            <!--Optional:-->
            <tot:fileName>Report.pdf</tot:fileName>
            <!--Optional:-->
-           <tot:contexto>codSistema=1;CodFilial=1</tot:contexto>
+           <tot:contexto>codColigada=1;CodFilial=1</tot:contexto>
         </tot:GenerateReport>
      </soapenv:Body>
   </soapenv:Envelope>

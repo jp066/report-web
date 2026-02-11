@@ -14,8 +14,8 @@ from app.schemas.report_schema import Report, ExportPdfRequest
 from app.schemas.login_schema import UsuarioDb
 
 
-@reportRouter.post("/generate/{id_report}/{codSistema}")
-async def generate_report_endpoint(id_report: int, codSistema: int, parameters: dict = Body(default={}), current_user: UsuarioDb = Depends(get_current_user)):
+@reportRouter.post("/generate/{id_report}/{codColigada}")
+async def generate_report_endpoint(id_report: int, codColigada: int, parameters: dict = Body(default={}), current_user: UsuarioDb = Depends(get_current_user)):
     logger = logging.getLogger("uvicorn.error")
     logger.info(
         f"Gerando relatório - ID: {id_report}, Usuário: {current_user.email}")
@@ -24,7 +24,7 @@ async def generate_report_endpoint(id_report: int, codSistema: int, parameters: 
             "Parâmetros recebidos no endpoint /generate: %s", parameters)
         # passa parâmetros opcionais para a função de geração
         guid = generate_report(id_report=id_report,
-                               codSistema=codSistema, **parameters)
+                               codColigada=codColigada, **parameters)
         file_size = get_file_size(guid)
         logger.info(
             f"Relatório gerado com sucesso - GUID: {guid}, Tamanho: {file_size}")
@@ -85,10 +85,10 @@ class MetadataResponse(BaseModel):
     parametros_requeridos: List[str]
 
 
-@reportRouter.get("/metadata/{codSistema}/{idReport}", response_model=MetadataResponse)
-def get_report_metadata(codSistema: int, idReport: int, current_user: UsuarioDb = Depends(get_current_user)):
+@reportRouter.get("/metadata/{codColigada}/{idReport}", response_model=MetadataResponse)
+def get_report_metadata(codColigada: int, idReport: int, current_user: UsuarioDb = Depends(get_current_user)):
     try:
-        metadata_xml = metadata_report(codSistema, idReport)
+        metadata_xml = metadata_report(codColigada, idReport)
         # namespace usado pelo RM nos metadados
         ns = {"r": "http://www.totvs.com.br/RM/"}
 

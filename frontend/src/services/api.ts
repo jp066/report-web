@@ -174,7 +174,7 @@ export async function fetchRelatorios(): Promise<Relatorio[]> {
 
 export async function fetchParams(
   idReport: number,
-  codColigada: number,
+  codSistema: number,
 ): Promise<any> {
   try {
     const token = localStorage.getItem("token");
@@ -185,9 +185,9 @@ export async function fetchParams(
       Authorization: `Bearer ${token}`,
     };
     const response = await api.get(
-      `/report/metadata/${codColigada}/${idReport}`,
+      `/report/metadata/${codSistema}/${idReport}`,
       { headers },
-    ); // /report/metadata?codColigada=${codColigada}&idReport=${idReport}
+    ); // /report/metadata?codSistema=${codSistema}&idReport=${idReport}
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -333,12 +333,12 @@ export async function resetPassword(
 
 export async function generateReport(
   idReport: number,
-  codColigada: number,
+  codSistema: number,
   parameters: Record<string, any> = {},
 ): Promise<any> {
   try {
     const response = await api.post(
-      `/report/generate/${idReport}/${codColigada}`,
+      `/report/generate/${idReport}/${codSistema}`,
       parameters,
       {
         timeout: 60000,

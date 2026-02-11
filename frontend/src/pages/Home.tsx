@@ -11,6 +11,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import Header from "../components/Header";
 import SearchComponent from "../components/SearchComponent";
 import Footer from "../components/Footer";
+import { FaChevronCircleUp } from "react-icons/fa";
 
 export default function HomePage() {
   const [filteredRelatorios, setFilteredRelatorios] = useState<Relatorio[]>([]);
@@ -182,6 +183,12 @@ export default function HomePage() {
           </div>
         </ModalNotification>
       </main>
+      
+      <div className="fixed bottom-8 right-8">
+        <button className="cursor-pointer hover:bg-blue-700 text-white p-1 rounded-full shadow-lg transition-all duration-200" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <FaChevronCircleUp size={50}/>
+        </button>
+      </div>
 
       {/* Paginação */}
       <div className="flex justify-center items-center gap-4 py-8">

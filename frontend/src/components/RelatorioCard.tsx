@@ -45,7 +45,7 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
         console.log("id_interno raw:", relatorio.id_interno);
 
         const reportId = parseInt(relatorio.id_interno.trim(), 10);
-        const codSistema = parseInt(relatorio.codigo_sistema.trim(), 10);
+        const codColigada = parseInt(relatorio.codigo_sistema.trim(), 10);
         console.log("Parâmetros a serem enviados:", paramValues);
 
         if (isNaN(reportId)) {
@@ -55,7 +55,7 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
         }
 
         console.log(`Iniciando geração do relatório ID: ${reportId}`);
-  const result = await generateReport(reportId, codSistema, paramValues);
+  const result = await generateReport(reportId, codColigada, paramValues);
         console.log("Relatório gerado com sucesso:", result);
 
         try {
