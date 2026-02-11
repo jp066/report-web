@@ -4,14 +4,17 @@ from app.schemas.env_schema import settings
 from app.schemas.env_schema import settings
 import logging
 
+logger = logging.getLogger("uvicorn.error")
+
 URL = settings.TOTVS_URL
 AUTH = (settings.TOTVS_USERNAME, settings.TOTVS_PASSWORD)
+
 
 def definer_params(**parameters):
     params_xml = ""
     for key, value in parameters.items():
-      value_str = "" if value is None else str(value)
-      param_xml = f"""
+        value_str = "" if value is None else str(value)
+        param_xml = f"""
       <RptParameterReportPar>
       <Description>{key}</Description>
       <ParamName>{key}</ParamName>
@@ -24,38 +27,48 @@ def definer_params(**parameters):
       <Visible>true</Visible>
       </RptParameterReportPar>
         """
-      params_xml += param_xml
+        params_xml += param_xml
     return params_xml
 
 
-def generate_report(id_report, **parameters):
+def generate_report(id_report, codSistema, **parameters):
+    logger.info("Gerando relatório: id=%s codSistema=%s parameters_keys=%s", id_report, codSistema, list(parameters.keys()))
     parameters = definer_params(**parameters)
-    xml_generate = f"""
-  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tot="http://www.totvs.com/">
+    xml_generate = f"""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tot="http://www.totvs.com/">
      <soapenv:Header/>
      <soapenv:Body>
         <tot:GenerateReport>
            <!--Optional:-->
+           <tot:codSistema>{codSistema}</tot:codSistema>
+           <!--Optional:-->
            <tot:id>{id_report}</tot:id>
            <!--Optional:-->
            <tot:filters><![CDATA[<?xml version="1.0" encoding="utf-16"?>
-<ArrayOfRptFilterReportPar xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.totvs.com.br/RM/">
-  <RptFilterReportPar>
-    <BandName></BandName>
-    <FiltersByTable />
-    <MainFilter>true</MainFilter>
-    <Value></Value>
-  </RptFilterReportPar>
-</ArrayOfRptFilterReportPar>]]></tot:filters>
+  <ArrayOfRptFilterReportPar xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.totvs.com.br/RM/">
+    <RptFilterReportPar>
+      <BandName>RptReport</BandName>
+      <FiltersByTable>
+        <RptFilterByTablePar>
+          <Filter>PFUNC.CHAPA &gt;= '00001' AND
+  PFUNC.CHAPA &lt;= '00010'
+  </Filter>
+          <TableName>PFUNC</TableName>
+        </RptFilterByTablePar>
+      </FiltersByTable>
+      <MainFilter>true</MainFilter>
+      <Value>(PFUNC.CHAPA &gt;= '00001' AND
+  PFUNC.CHAPA &lt;= '00010')</Value>
+    </RptFilterReportPar>
+  </ArrayOfRptFilterReportPar>]]></tot:filters>
            <!--Optional:-->
            <tot:parameters><![CDATA[<?xml version="1.0" encoding="utf-16"?>
   <ArrayOfRptParameterReportPar xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.totvs.com.br/RM/">
-    {parameters}
+  {parameters}
   </ArrayOfRptParameterReportPar>]]></tot:parameters>
            <!--Optional:-->
-           <tot:fileName>Report{ id_report }.pdf</tot:fileName>
+           <tot:fileName>Report.pdf</tot:fileName>
            <!--Optional:-->
-           <tot:contexto>CodColigada=1;CodFilial=1</tot:contexto>
+           <tot:contexto>codSistema=1;CodFilial=1</tot:contexto>
         </tot:GenerateReport>
      </soapenv:Body>
   </soapenv:Envelope>
@@ -71,42 +84,62 @@ def generate_report(id_report, **parameters):
         "Connection": "Keep-Alive",
         "User-Agent": requests.utils.default_user_agent(),
     }
+    try:
+        logger.debug(
+            "Enviando GenerateReport (tamanho do XML=%s bytes)", len(xml_generate))
+        resp = requests.post(URL, data=xml_generate, headers=headers,
+                             auth=AUTH, verify=settings.SOAP_VERIFY_SSL, timeout=60)
+        logger.info("GenerateReport HTTP status: %s", resp.status_code)
+        logger.debug("Response preview: %s", (resp.text or '')[:1000])
+    except Exception as e:
+        logger.exception("Erro HTTP ao enviar GenerateReport: %s", e)
+        raise
 
-    resp = requests.post(URL, data=xml_generate, headers=headers, auth=AUTH, verify=settings.SOAP_VERIFY_SSL)
-    logger = logging.getLogger("uvicorn.error")
-    logger.info(f"Status Code: {resp.status_code}")
+    try:
+        parser_xml = ET.fromstring(resp.content)
+    except Exception as e:
+        logger.exception(
+            "Erro ao parsear XML de resposta do GenerateReport: %s", e)
+        logger.debug("Resposta bruta (bytes): %s", resp.content)
+        raise RuntimeError(
+            "Resposta XML inválida do TOTVS ao gerar relatório") from e
 
-    parser_xml = ET.fromstring(resp.content)
-
-    # Verifica se é um SOAP Fault (erro)
-    fault = parser_xml.find(
-        './/{http://schemas.xmlsoap.org/soap/envelope/}Fault')
-    if fault is not None:
-        faultstring = fault.find('.//faultstring')
-        error_message = faultstring.text if faultstring is not None else "Erro desconhecido no serviço TOTVS"
-        logger.error(f"SOAP Fault recebido: {error_message}")
-        raise RuntimeError(f"Erro do TOTVS: {error_message}")
+        # Verifica se é um SOAP Fault (erro)
+        fault = parser_xml.find(
+            './/{http://schemas.xmlsoap.org/soap/envelope/}Fault')
+        if fault is not None:
+            faultstring = fault.find('.//faultstring')
+            error_message = faultstring.text if faultstring is not None else "Erro desconhecido no serviço TOTVS"
+            logger.error(f"SOAP Fault recebido: {error_message}")
+            raise RuntimeError(f"Erro do TOTVS: {error_message}")
 
     # Log de todos os elementos encontrados (apenas em caso de sucesso)
-    logger.info("Resposta XML recebida do TOTVS: %s", resp.content)
-    logger.info("Elementos encontrados no XML:")
+    logger.debug("Resposta XML completa recebida do TOTVS (len=%s)",
+                 len(resp.content or b""))
+    logger.debug("Elementos encontrados no XML:")
     for element in parser_xml.iter():
-        logger.info(
-            f"  Tag: {element.tag}, Text: {(element.text or '')[:100]}")
+        logger.debug("  Tag: %s, Text: %s", element.tag,
+                     (element.text or '')[:200])
 
     guid = None
     for element in parser_xml.iter():  # percorre todos os elementos do XML
-        if element.tag.endswith('GenerateReportResult'):
-            guid = (element.text or '').strip()
-            break
+        try:
+            if element.tag.endswith('GenerateReportResult'):
+                guid = (element.text or '').strip()
+                break
+        except Exception:
+            # continue se algum node inesperado
+            continue
 
     if guid is None:
+        logger.error("GenerateReportResult não encontrado na resposta XML")
         raise RuntimeError("GenerateReportResult não encontrado na resposta")
-      
+
     result_text = guid
 
     if "Object reference not set to an instance of an object." in result_text:
-      raise RuntimeError(f"Erro do TOTVS ao gerar relatório: {result_text}")
+        logger.error("Erro do TOTVS ao gerar relatório: %s", result_text)
+        raise RuntimeError(f"Erro do TOTVS ao gerar relatório: {result_text}")
 
-    logger.info(f"GUID gerado com sucesso: {guid}")
+    logger.info("GUID gerado com sucesso: %s", guid)
     return guid

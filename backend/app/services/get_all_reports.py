@@ -1,6 +1,10 @@
+import logging
+import threading
+import concurrent
 import xml.etree.ElementTree as ET
 import requests
 from app.schemas.env_schema import settings
+from app.services import get_metadata_reports
 
 URL = settings.TOTVS_URL
 AUTH = (settings.TOTVS_USERNAME, settings.TOTVS_PASSWORD)
@@ -72,10 +76,9 @@ def report_list():
     for record in records:
         fields = record.split(",")
         if len(fields) == 8 and fields[0] == "":
-            fields = fields[1:]  # Remove o campo extra inicial
+            fields = fields[1:]
         if len(fields) != 7:
             raise RuntimeError(f"Registro com número inesperado de campos: {record}")
-        print(f"Record fields: {fields}")
         item = {
             "codigo_sistema": fields[0],
             "nome_sistema": fields[1],
@@ -83,10 +86,14 @@ def report_list():
             "codigo_relatorio": fields[3],
             "nome_relatorio": fields[4],
             "data_atualizacao": fields[5],
-            "guid": fields[6]
+            "guid": fields[6],
+            "metadata": None
         }
         parsed.append(item)
-
+    parsed = [
+        p for p in parsed
+        if any(y in (p.get("data_atualizacao") or "") for y in ("2025", "2026", "2024"))
+    ]
     return parsed
 
 

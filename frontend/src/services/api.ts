@@ -4,7 +4,7 @@ import type { Relatorio } from "../types/relatorio";
 const baseURL = import.meta.env.VITE_API_URL;
 export const api = axios.create({
   baseURL: baseURL,
-  timeout: 30000, // Aumentado para 30 segundos
+  timeout: 60000, // Aumentado para 30 segundos
   headers: {
     "Content-Type": "application/json",
   },
@@ -172,6 +172,31 @@ export async function fetchRelatorios(): Promise<Relatorio[]> {
   }
 }
 
+export async function fetchParams(
+  idReport: number,
+  codColigada: number,
+): Promise<any> {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token não encontrado. Faça login novamente.");
+    }
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await api.get(
+      `/report/metadata/${codColigada}/${idReport}`,
+      { headers },
+    ); // /report/metadata?codColigada=${codColigada}&idReport=${idReport}
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      throw new Error("Não autorizado. Por favor, faça login novamente.");
+    }
+    throw error;
+  }
+}
+
 export async function curr_user(): Promise<any> {
   try {
     const token = localStorage.getItem("token");
@@ -306,11 +331,15 @@ export async function resetPassword(
   }
 }
 
-export async function generateReport(idReport: number): Promise<any> {
+export async function generateReport(
+  idReport: number,
+  codColigada: number,
+  parameters: Record<string, any> = {},
+): Promise<any> {
   try {
     const response = await api.post(
-      `/report/generate/${idReport}`,
-      {},
+      `/report/generate/${idReport}/${codColigada}`,
+      parameters,
       {
         timeout: 60000,
       },
@@ -355,7 +384,6 @@ export async function handleDownload({
   try {
     if (!url) throw new Error("URL de download inválida");
 
-    // Se url for absoluta (começa com http(s) ou //), usa-a como está.
     const isAbsolute = /^(https?:)?\/\//i.test(String(url));
 
     const downloadUrl = isAbsolute
