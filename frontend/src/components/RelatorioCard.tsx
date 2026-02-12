@@ -3,6 +3,9 @@ import { ButtonReport } from "../elements/buttonTypes";
 import { generateReport } from "../services/api";
 import { useState } from "react";
 import { fetchParams } from "../services/api";
+import { CgMoreO } from "react-icons/cg";
+import { MdOutlinePanoramaFishEye } from "react-icons/md";
+import { GiSettingsKnobs } from "react-icons/gi";
 
 interface RelatorioCardProps {
   relatorio: Relatorio;
@@ -10,6 +13,7 @@ interface RelatorioCardProps {
 
 export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [params, setParams] = useState<any>(null);
@@ -140,11 +144,7 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
     }
   };
 
-  // Normaliza a propriedade `params` para facilitar renderização
-  // Suporta os formatos:
-  // - null
-  // - array de parâmetros (ex.: [{ name, value }])
-  // - objeto { filtros_disponiveis, parametros_requeridos }
+  
   const normalizedParams = (() => {
     if (!params) return { paramArray: null, filtros: null };
     if (Array.isArray(params)) return { paramArray: params, filtros: null };
@@ -157,33 +157,44 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
 
   return (
     <article className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden hover:scale-[1.02]">
+      <img src="https://media.istockphoto.com/id/1316134499/pt/foto/a-concept-image-of-a-magnifying-glass-on-blue-background-with-a-word-example-zoom-inside-the.jpg?s=612x612&w=0&k=20&c=raTXPP4qnJy_svR1J6dOYeoonbJOWeezfvGd9mAE5vo=" alt="" className="w-full h-48 object-cover" />
       <div className="p-6 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {relatorio.nome_relatorio || "Relatório sem título"}
           </h3>
         </div>
-        <div className="space-y-2">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">Código do relatorio:</span>{" "}
-            {relatorio.codigo_relatorio}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">Sistema:</span>{" "}
-            {relatorio.nome_sistema}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">ID:</span> {relatorio.id_interno}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">ID do Sistema:</span>{" "}
-            {relatorio.codigo_sistema}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">Ultima atualização:</span>{" "}
-            {formatDate(relatorio.data_atualizacao)}
-          </p>
-        </div>
+        <button>
+          <span
+            className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer"
+            onClick={() => setInfoOpen((open) => !open)}
+          >
+            {infoOpen ? <div className="flex items-center gap-2"> <MdOutlinePanoramaFishEye size={20} /> Ocultar informações </div> : <div className="flex items-center gap-2"> <CgMoreO size={20} /> Mostrar informações</div>}
+          </span>
+        </button>
+        {infoOpen && (
+          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg shadow-inner">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-medium">Código do relatorio:</span>{" "}
+              {relatorio.codigo_relatorio}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-medium">Sistema:</span>{" "}
+              {relatorio.nome_sistema}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-medium">ID:</span> {relatorio.id_interno}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-medium">ID do Sistema:</span>{" "}
+              {relatorio.codigo_sistema}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-medium">Última atualização:</span>{" "}
+              {formatDate(relatorio.data_atualizacao)}
+            </p>
+          </div>
+        )}
         <div>
           <span className="block h-px bg-gray-100 dark:bg-gray-700"></span>
           <div className="flex justify-center items-center gap-4 mt-2">
@@ -228,12 +239,12 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
               </div>
             )}
             {!params && (
-              <span className="border text-lg rounded-full text-gray-200 dark:text-gray-200 shadow-lg transition-shadow">
+              <span className="text-lg rounded-md text-gray-200 dark:text-gray-200 transition-shadow">
                 <button
-                  className="px-3 py-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer"
+                  className="cursor-pointer flex items-center justify-center gap-2 text-sm font-medium dark:text-gray-200 transition-colors hover:text-gray-400 dark:hover:text-gray-400"
                   onClick={handleConsultaParams}
                 >
-                  Consultar Filtros & Parâmetros
+                  <GiSettingsKnobs size={20} /> Consultar Filtros & Parâmetros
                 </button>
               </span>
             )}

@@ -6,6 +6,7 @@ import ModalNotification from "../components/ModalNotification";
 import type { Relatorio } from "../types/relatorio";
 import { fetchRelatorios } from "../services/api";
 import RelatorioCard from "../components/RelatorioCard";
+import RelatorioFilters from "../components/RelatorioFilters";
 import SkeletonCard from "../components/SkeletonCard";
 import ErrorMessage from "../components/ErrorMessage";
 import Header from "../components/Header";
@@ -104,6 +105,7 @@ export default function HomePage() {
             : `${filteredRelatorios.length} relatório(s) encontrado(s)`}
         </p>
         <SearchComponent onSearch={handleSearch} updateRelatorios={loadRelatorios} />
+        <RelatorioFilters relatorios={relatorios} setFilteredRelatorios={setFilteredRelatorios} loadRelatorios={loadRelatorios} />
         {error ? (
           <ErrorMessage message={error} onRetry={loadRelatorios} />
         ) : loading ? (

@@ -9,6 +9,14 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
+  /* Bee Dashboard color palette (dark / default values) */
+  --bee-yellow: #FFD700; /* Destaques */
+  --bee-orange: #FFA500; /* Alertas / Hover */
+  --bee-brown: #4B3621;  /* Textos / ícones */
+  --bee-teal: #dee3e3;   /* Acento secundário */
+  --bee-bg-card: #1a1a1a; /* Fundo dos cards (dark) */
+  --bee-bg-main: #242424; /* Fundo principal (dark)	*/
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -133,6 +141,14 @@ button:focus-visible {
   :root {
     color: #213547;
     background-color: #ffffff;
+
+    /* Bee Dashboard color palette (light overrides) */
+    --bee-yellow: #FFD700; /* Destaques */
+    --bee-orange: #FFA500; /* Alertas / Hover */
+    --bee-brown: #4B3621;  /* Textos / ícones */
+    --bee-teal: #49A09A;   /* Acento secundário */
+    --bee-bg-card: #f5f5f5; /* Fundo dos cards (light) */
+    --bee-bg-main: #ffffff; /* Fundo principal (light) */
   }
   a:hover {
     color: #747bff;
@@ -141,3 +157,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Bee palette utilities */
+.bg-bee-yellow { background-color: var(--bee-yellow) !important; color: #1a1a1a !important; }
+.bg-bee-orange { background-color: var(--bee-orange) !important; color: #1a1a1a !important; }
+.text-bee-brown { color: var(--bee-brown) !important; }
+.text-bee-teal { color: var(--bee-teal) !important; }
+.bg-bee-card { background-color: var(--bee-bg-card) !important; }
+.bg-bee-main { background-color: var(--bee-bg-main) !important; }
+.btn-bee-alert:hover { background-color: var(--bee-orange) !important; color: #1a1a1a !important; }
