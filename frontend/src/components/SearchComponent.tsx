@@ -9,7 +9,10 @@ interface SearchComponentProps {
   updateRelatorios: () => void;
 }
 
-const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch, updateRelatorios }) => {
+const SearchComponent: React.FC<SearchComponentProps> = ({
+  onSearch,
+  updateRelatorios,
+}) => {
   const [query, setQuery] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,12 +35,19 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch, updateRelat
           value={query}
           onChange={handleInputChange}
           placeholder="Pesquise por Código, ID ou Nome do Relatório..."
-          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors text-sm"
+          className="flex-1 px-4 py-2 border border-yellow-200 bg-yellow-500/10 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors text-sm"
         />
+        <button
+          type="submit"
+          className="rounded-full flex items-center gap-2 cursor-pointer p-2 hover:bg-blue-600 dark:hover:bg-yellow-300 transition-colors"
+          title="Pesquisar Relatórios"
+        >
+          <FaSearch size={20} className="hover:text-black transition-colors" />
+        </button>
         <button>
           <VscClearAll
             size={24}
-            className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            className="cursor-pointer hover:text-yellow-300 transition-colors"
             title="Limpar Pesquisa"
             onClick={() => {
               setQuery("");
@@ -46,21 +56,14 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch, updateRelat
           />
         </button>
         <button
-          type="submit"
-          className="rounded-full flex items-center gap-2 cursor-pointer bg-gray-200 dark:bg-gray-600 p-2 hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
-          title="Pesquisar Relatórios"
-        >
-          <FaSearch size={20} className="hover:text-white transition-colors" />
-        </button>
-        <button
           type="button"
-          className="rounded-full flex items-center gap-2 cursor-pointer bg-gray-200 dark:bg-gray-600 p-2 hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 cursor-pointer p-2 hover:text-yellow-300 transition-colors"
           title="Atualizar Relatórios"
           onClick={() => {
             updateRelatorios();
           }}
         >
-          <IoReload size={20} className="hover:text-white transition-colors" />
+          <IoReload size={20} className="transition-colors" />
         </button>
       </form>
     </div>

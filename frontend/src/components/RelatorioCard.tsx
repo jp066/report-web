@@ -156,11 +156,10 @@ export default function RelatorioCard({ relatorio }: RelatorioCardProps) {
   })();
 
   return (
-    <article className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden hover:scale-[1.02]">
-      <img src="https://media.istockphoto.com/id/1316134499/pt/foto/a-concept-image-of-a-magnifying-glass-on-blue-background-with-a-word-example-zoom-inside-the.jpg?s=612x612&w=0&k=20&c=raTXPP4qnJy_svR1J6dOYeoonbJOWeezfvGd9mAE5vo=" alt="" className="w-full h-48 object-cover" />
+    <article className="group bg-gray-300/20 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden hover:scale-[1.02]">
       <div className="p-6 space-y-4">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
             {relatorio.nome_relatorio || "Relatório sem título"}
           </h3>
         </div>

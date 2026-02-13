@@ -84,14 +84,15 @@ h1 {
   font-size: 1em !important;
   font-weight: 500 !important;
   font-family: inherit !important;
-  background-color: #474747 !important;
+  background-color: #FFD700 !important;
+  color: #1a1a1a;
   cursor: pointer !important;
   transition: border-color 0.25s !important;
 }
 
 .buttonReport:hover {
-  border-color: #23374f !important;
-  background-color: #37659b !important;
+  border-color: #FFA500 !important;
+  background-color: #FFA500 !important;
   transition: all 0.3s ease-in-out !important;
 }
 
@@ -129,7 +130,7 @@ h1 {
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color:#FFD700 !important;
 }
 
 button:focus,

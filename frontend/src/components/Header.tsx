@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import ModalNotification from "./ModalNotification";
-import { ButtonDownload, ButtonHeader } from "../elements/buttonTypes";
 import { IoMdLogOut } from "react-icons/io";
 import { IoMdSettings } from "react-icons/io";
 import { useAuth } from "../hooks/useAuth";
@@ -294,17 +293,17 @@ export default function Header() {
             <div className="flex items-center">
               <button
                 onClick={() => navigate("configuracoes")} // /settings
-                className="mr-4 cursor-pointer"
+                className="mr-4 cursor-pointer hover:scale-110 transition-all flex items-center justify-center "
                 title="Configurações"
               >
-                <IoMdSettings className="w-8 h-8 text-2xl mr-2 text-gray-600 dark:text-gray-300 hover:bg-gray-300 hover:bg-gray-700 rounded-full hover:w-10 hover:h-10 transition-all" />
+                <IoMdSettings className="w-8 h-8 text-2xl mr-2 text-bee-yellow dark:text-yellow-400 rounded-full hover:w-10 hover:h-10 transition-all" />
               </button>
               <button
                 onClick={signOut}
                 className="cursor-pointer hover:scale-110 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300 transition-all"
                 title="Deslogar"
               >
-                <IoMdLogOut className="cursor-pointer hover:scale-110 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold text-gray-700 dark:text-gray-300 transition-all" />
+                <IoMdLogOut className="cursor-pointer hover:scale-110 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold text-bee-yellow dark:text-yellow-400 transition-all" />
               </button>
               <div className="flex flex-col ml-2">
                 <span
@@ -314,38 +313,39 @@ export default function Header() {
                   {loadingUser ? (
                     "Carregando..."
                   ) : (
-                    <>
-                      {getPrefix(curr_user_data?.nome)}
-                      {curr_user_data?.nome ?? "Usuário"}
-                    </>
-                  )}
-                </span>
-                {curr_user_data && curr_user_data.email && (
-                  <span className="text-xs text-gray-500 dark:text-gray-300">
-                    {curr_user_data.email}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div></div>
-
+                    <pre className="inline bg-bee-yellow dark:bg-bee-yellow text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full border border-yellow-200 dark:border-yellow-700 font-semibold">
+                      {" "}
+                      {getPrefix(curr_user_data?.nome)}{" "}
+                      {curr_user_data?.nome ?? "Usuário"}{" "}
+                    </pre>
+                  )}{" "}
+                </span>{" "}
+              </div>{" "}
+            </div>{" "}
+            <div></div>{" "}
             <div className="flex items-center gap-5">
+              {" "}
               <nav>
+                {" "}
                 <button
                   className="px-4 py-2 rounded-full border border-gray-300 text-gray-900 dark:text-white font-medium transition-colors cursor-pointer"
                   onClick={() => {
                     navigate("/");
                   }}
                 >
-                  <TbReportSearch className="w-6 h-6 text-gray-900 dark:text-white" />
-                </button>
+                  {" "}
+                  <TbReportSearch className="w-6 h-6 text-gray-900 dark:text-white hover:text-yellow-300" />{" "}
+                </button>{" "}
                 <div className="w-full text-center mt-1">
+                  {" "}
                   <span className="text-sm text-gray-600 dark:text-gray-300">
-                    Relatórios
-                  </span>
-                </div>
-              </nav>
+                    {" "}
+                    Relatórios{" "}
+                  </span>{" "}
+                </div>{" "}
+              </nav>{" "}
               <nav>
+                {" "}
                 <button
                   onClick={() => {
                     loadDownloadQueue();
@@ -353,25 +353,29 @@ export default function Header() {
                   }}
                   className="px-4 py-2 rounded-full border border-gray-300 text-gray-900 dark:text-white font-medium transition-colors cursor-pointer"
                 >
-                  <HiMiniQueueList className="w-6 h-6 text-gray-900 dark:text-white" />
-                </button>
+                  {" "}
+                  <HiMiniQueueList className="w-6 h-6 text-gray-900 dark:text-white hover:text-yellow-300" />{" "}
+                </button>{" "}
                 <div className="w-full text-center mt-1">
+                  {" "}
                   <span className="text-sm text-gray-600 dark:text-gray-300">
-                    Fila de relatórios
-                  </span>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </header>
+                    {" "}
+                    Fila de relatórios{" "}
+                  </span>{" "}
+                </div>{" "}
+              </nav>{" "}
+            </div>{" "}
+          </div>{" "}
+        </div>{" "}
+      </header>{" "}
       <ModalNotification
         isOpen={isDownloadOpen}
         onClose={() => setIsDownloadOpen(false)}
         title="Fila de Relatórios"
         message="Selecione um relatório da lista para fazer o download."
-        type="download"
+        type="success"
       >
+        {" "}
         <div className="space-y-3">
           {downloadQueue.length === 0 ? (
             <p className="text-sm text-gray-600">Nenhum relatório na fila.</p>

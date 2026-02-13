@@ -9,7 +9,7 @@ export default function SignUpPage() {
   const animatedComponents = makeAnimated();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [contextoEducacional, setContextoEducacional] = useState("");
+//  const [contextoEducacional, setContextoEducacional] = useState("");
   const [senha, setSenha] = useState("");
   const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -32,12 +32,12 @@ export default function SignUpPage() {
     }
   }
 
-  async function handleSelectContexto(
+/*  async function handleSelectContexto(
     event: React.ChangeEvent<HTMLSelectElement>,
   ) {
     console.log("Contexto educacional selecionado:", event.target.value);
     setContextoEducacional(event.target.value);
-  }
+  }*/
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
